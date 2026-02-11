@@ -25,7 +25,7 @@ public abstract class Vehicle {
     public double getBaseRatePerDay(){
         return baseRatePerDay;
     }
-    public boolean getIsAvailable(){
+    public boolean isAvailable(){
         return isAvailable;
     }
 
