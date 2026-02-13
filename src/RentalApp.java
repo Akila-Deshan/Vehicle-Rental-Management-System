@@ -1,12 +1,15 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 public class RentalApp {
+    // Vehicles stored in an ArrayList
     private static ArrayList<Vehicle> vehicleList = new ArrayList<>();
+    // Track total income
     private static double totalRevenue = 0.0;
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args){
 
+        // Main menu loop
         while(true){
             System.out.println("\n=== Vehicle Rental Management System ===");
             System.out.println("1. Add a Vehicle");
@@ -19,6 +22,7 @@ public class RentalApp {
             System.out.println("8. Sort Vehicles by Rate (Special Feature!)");
             System.out.print("Enter your choice: ");
 
+            // Handle invalid numeric inputs
             try{
                 int choice = scanner.nextInt();
                 scanner.nextLine();
@@ -48,16 +52,19 @@ public class RentalApp {
                     case 8:
                         sortVehicles();
                         break;
+                    // Stop invalid menu selections
                     default:
                         System.out.println("Invalid option try again!");
                 }
             }catch(Exception e){
+                // Meaningful error messages
                 System.out.println("Invalid input. Please enter a number.");
                 scanner.nextLine();
             }
         }
     }
 
+    // Helper method for find a vehicle by id this make the code cleaner and professional
     private static Vehicle findVehicle(String id){
         for (Vehicle v : vehicleList){
             if(v.getVehicleId().equalsIgnoreCase(id)){
@@ -67,13 +74,23 @@ public class RentalApp {
         return null;
     }
 
+    // Method for add vehicle
     private static void addVehicle(){
         System.out.println("\nSelect Type: 1. Car | 2. Bike | 3. Van");
         try{
             int type = scanner.nextInt();
             scanner.nextLine();
+
+            // Validate the type attribute
+            if (type < 1 || type > 3){
+                System.out.println("Invalid vehicle type!");
+                return;
+            }
+
             System.out.print("Enter ID: ");
             String id = scanner.nextLine();
+
+            // Using findVehicle helper to check same id's
             if (findVehicle(id) != null){
                 System.out.println("Error: ID already exists!");
                 return;
@@ -86,6 +103,7 @@ public class RentalApp {
             System.out.print("Enter Base Rate: ");
             double rate = scanner.nextDouble();
 
+            // Create specific objects based on user input
             switch (type){
                 case 1:
                     System.out.print("Enter Seats: ");
@@ -112,17 +130,20 @@ public class RentalApp {
         }
     }
 
+    // Method for view vehicles
     private static void viewVehicles(){
         if(vehicleList.isEmpty()){
             System.out.println("No vehicles found!");
         }else{
             System.out.println("\n=== Vehicle List ===");
+            // Demonstrate polymorphism
             for(Vehicle v : vehicleList){
                 v.displayDetails();
             }
         }
     }
 
+    // Method for rent vehicle
     private static void rentVehicle(){
         System.out.print("Enter Vehicle ID to Rent: ");
         String id = scanner.nextLine();
@@ -132,6 +153,7 @@ public class RentalApp {
             System.out.println("Vehicle not found!");
             return;
         }
+        // Cannot rent if already rented
         if (!v.isAvailable()){
             System.out.println("Vehicle is already rented!");
             return;
@@ -142,19 +164,21 @@ public class RentalApp {
         try{
             int days = scanner.nextInt();
             scanner.nextLine();
+            // Rental days must be > 0
             if(days <= 0){
                 System.out.println("Days must be positive!");
                 return;
             }
 
+            // Polymorphic calculation
             double cost = v.calculateRentalCost(days);
             System.out.println("Total Cost: " + cost);
 
             System.out.print("Confirm rent? (yes/no): ");
             String confirm = scanner.nextLine();
             if (confirm.equalsIgnoreCase("yes")){
-                v.rentVehicle();
-                totalRevenue += cost;
+                v.rentVehicle(); // Update status
+                totalRevenue += cost; // Update revenue
             }else if(confirm.equalsIgnoreCase("No")){
                 System.out.println("Rental cancelled!");
             }else{
@@ -166,6 +190,7 @@ public class RentalApp {
         }
     }
 
+    // Method for return vehicle
     private static void returnVehicle(){
         System.out.print("Enter Vehicle ID to return: ");
         String id = scanner.nextLine();
@@ -178,6 +203,7 @@ public class RentalApp {
         }
     }
 
+    // Method for search vehicle
     private static void searchVehicle(){
         System.out.print("Enter ID: ");
         String id = scanner.nextLine();
@@ -189,6 +215,7 @@ public class RentalApp {
         }
     }
 
+    // Method to sort vehicles (Special Feature task 5.1)
     private static void sortVehicles(){
         if(vehicleList.isEmpty()){
             System.out.println("No vehicles to sort.");
@@ -197,9 +224,11 @@ public class RentalApp {
         int n = vehicleList.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
+                // Get two adjacent vehicles
                 Vehicle v1 = vehicleList.get(j);
                 Vehicle v2 = vehicleList.get(j + 1);
 
+                // Compare Base Rates and Swap
                 if (v1.getBaseRatePerDay() > v2.getBaseRatePerDay()) {
                     vehicleList.set(j, v2);
                     vehicleList.set(j + 1, v1);
